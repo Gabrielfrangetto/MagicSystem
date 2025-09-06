@@ -224,7 +224,7 @@ class AchievementSystem {
             },
             {
                 id: 'first_game',
-                name: 'Primeiro a Jogar',
+                name: 'Primeiro Passo',
                 description: 'Comece um jogo pela primeira vez',
                 icon: '🎮',
                 unlocked: false,
@@ -232,7 +232,7 @@ class AchievementSystem {
                 maxProgress: 1,
                 xpReward: 25,
                 trigger: 'first_player',
-                category: 'Vitória'
+                category: 'Vitória' // Movido de Tutorial para Vitória
             },
             // NOVOS ACHIEVEMENTS DE COMANDANTE
             {
@@ -452,67 +452,6 @@ class AchievementSystem {
                 xpReward: 150,
                 trigger: 'match_count',
                 category: 'Participação'
-            },
-            // NOVOS ACHIEVEMENTS DE DONO DA CARTA
-            {
-                id: 'card_owner_1',
-                name: 'Primeira Contribuição',
-                description: 'Tenha 1 carta sua como carta da partida',
-                icon: '🌟',
-                unlocked: false,
-                progress: 0,
-                maxProgress: 1,
-                xpReward: 25,
-                trigger: 'card_owner_count',
-                category: 'Carta do Jogo'
-            },
-            {
-                id: 'card_owner_5',
-                name: 'Colecionador Ativo',
-                description: 'Tenha 5 cartas suas como carta da partida',
-                icon: '📚',
-                unlocked: false,
-                progress: 0,
-                maxProgress: 5,
-                xpReward: 50,
-                trigger: 'card_owner_count',
-                category: 'Carta do Jogo'
-            },
-            {
-                id: 'card_owner_10',
-                name: 'Influenciador de Mesa',
-                description: 'Tenha 10 cartas suas como carta da partida',
-                icon: '🎭',
-                unlocked: false,
-                progress: 0,
-                maxProgress: 10,
-                xpReward: 75,
-                trigger: 'card_owner_count',
-                category: 'Carta do Jogo'
-            },
-            {
-                id: 'card_owner_25',
-                name: 'Protagonista Frequente',
-                description: 'Tenha 25 cartas suas como carta da partida',
-                icon: '🎪',
-                unlocked: false,
-                progress: 0,
-                maxProgress: 25,
-                xpReward: 100,
-                trigger: 'card_owner_count',
-                category: 'Carta do Jogo'
-            },
-            {
-                id: 'card_owner_50',
-                name: 'Lenda das Cartas',
-                description: 'Tenha 50 cartas suas como carta da partida',
-                icon: '👑',
-                unlocked: false,
-                progress: 0,
-                maxProgress: 50,
-                xpReward: 200,
-                trigger: 'card_owner_count',
-                category: 'Carta do Jogo'
             }
         ];
     }
@@ -648,17 +587,6 @@ class AchievementSystem {
                         shouldUnlock = true;
                     }
                     break;
-                    
-                case 'card_owner_count':
-                    // Se a carta da partida existe e o dono é o jogador
-                    if (matchData.gameCard && matchData.gameCard.ownerId === playerId) {
-                        achievementCopy.progress = (achievementCopy.progress || 0) + 1;
-                        
-                        if (achievementCopy.progress >= achievementCopy.maxProgress) {
-                            shouldUnlock = true;
-                        }
-                    }
-                    break;
             }
             
             if (shouldUnlock) {
@@ -695,20 +623,19 @@ class AchievementSystem {
                     console.log(`Conquista ${achievement.name}: progresso ${achievement.progress}/${achievement.maxProgress}`);
                     break;
                     
+                case 'commander_removed_count':
+                    achievement.progress = playerStats.commanderRemovals || 0;
+                    shouldUnlock = achievement.progress >= achievement.maxProgress;
+                    console.log(`Conquista ${achievement.name}: progresso ${achievement.progress}/${achievement.maxProgress}`);
+                    break;
+                    
                 case 'archenemy_count':
                     achievement.progress = playerStats.archenemyCount || 0;
                     shouldUnlock = achievement.progress >= achievement.maxProgress;
                     console.log(`Conquista ${achievement.name}: progresso ${achievement.progress}/${achievement.maxProgress}`);
                     break;
-                    
-                case 'card_owner_count':
-                    achievement.progress = playerStats.cardOwnerCount || 0;
-                    shouldUnlock = achievement.progress >= achievement.maxProgress;
-                    console.log(`Conquista ${achievement.name}: progresso ${achievement.progress}/${achievement.maxProgress}`);
-                    break;
-                    
-                case 'commander_removed_count':
-                    achievement.progress = playerStats.commanderRemovals || 0;
+                case 'match_count':
+                    achievement.progress = playerStats.totalMatches || 0;
                     shouldUnlock = achievement.progress >= achievement.maxProgress;
                     console.log(`Conquista ${achievement.name}: progresso ${achievement.progress}/${achievement.maxProgress}`);
                     break;
@@ -870,60 +797,17 @@ class AchievementSystem {
         // Verificar conquistas baseadas em estatísticas
         const statAchievements = this.checkStatAchievements(playerStats);
         
-        // Verificar se é a primeira partida do jogador para desbloquear "Primeiro Passo"
-        if (playerStats.totalMatches === 1) {
-            // Desbloquear "Primeiro Passo" com data da partida
-            const firstMatchAchievement = this.achievements.find(a => a.id === 'first_match');
-            if (firstMatchAchievement && !firstMatchAchievement.unlocked) {
-                firstMatchAchievement.unlocked = true;
-                firstMatchAchievement.progress = 1;
-                matchAchievements.push(firstMatchAchievement);
-            }
-        }
-        
-        // Verificar se é a primeira remoção de comandante para desbloquear "Primeira Queda"
-        if (playerStats.commanderRemovals === 1) {
-            // Desbloquear "Primeira Queda" com data da partida
-            const firstCommanderRemovedAchievement = this.achievements.find(a => a.id === 'commander_removed_1');
-            if (firstCommanderRemovedAchievement && !firstCommanderRemovedAchievement.unlocked) {
-                firstCommanderRemovedAchievement.unlocked = true;
-                firstCommanderRemovedAchievement.progress = 1;
-                matchAchievements.push(firstCommanderRemovedAchievement);
-            }
-        }
-        
-        // Verificar se é a primeira remoção de comandante para desbloquear "Primeira Queda"
-        if (playerStats.commanderRemovals === 1) {
-            // Desbloquear "Primeira Queda" com data da partida
-            const firstCommanderRemovedAchievement = this.achievements.find(a => a.id === 'commander_removed_1');
-            if (firstCommanderRemovedAchievement && !firstCommanderRemovedAchievement.unlocked) {
-                firstCommanderRemovedAchievement.unlocked = true;
-                firstCommanderRemovedAchievement.progress = 1;
-                matchAchievements.push(firstCommanderRemovedAchievement);
-            }
-        }
-        
         // Combinar todas as conquistas desbloqueadas
         const allUnlocked = [...matchAchievements, ...statAchievements];
         
-        // Função para parser de data local (evita problemas de timezone)
-        function parseLocalDate(dateStr) {
-            if (!dateStr) return new Date();
-            if (dateStr instanceof Date) return dateStr;
-            const [y, m, d] = dateStr.split('-').map(Number);
-            return new Date(y, m - 1, d, 12, 0, 0);
-        }
-        
-        // Usar sempre a data da partida com parser local
-        const matchDate = matchData?.date 
-            ? parseLocalDate(matchData.date) 
-            : (matchData?.createdAt ? new Date(matchData.createdAt) : new Date());
+        // Usar a data da partida para achievements baseados na partida, data atual para achievements de estatística
+        const matchDate = matchData.createdAt ? new Date(matchData.createdAt) : new Date();
         
         // Salvar cada conquista desbloqueada (servidor processa XP automaticamente)
         for (const achievement of allUnlocked) {
             try {
-                // CORREÇÃO: Todos os achievements usam a data da partida (exceto achievements de senha)
-                const unlockedAt = matchDate;
+                // Usar data da partida para achievements de partida, data atual para achievements de estatística
+                const unlockedAt = matchAchievements.includes(achievement) ? matchDate : new Date();
                 await this.saveAchievement(playerId, achievement, unlockedAt);
                 
                 // CORREÇÃO: Mostrar notificação APENAS para o usuário master, XP é processado no servidor

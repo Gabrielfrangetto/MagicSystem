@@ -1,6 +1,9 @@
 class MagicGameSystem {
     constructor() {
-        this.apiUrl = '/api';
+        // Detectar automaticamente se está em produção ou desenvolvimento
+        this.apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : `${window.location.origin}/api`;
         this.currentPlayerId = localStorage.getItem('currentPlayerId');
         this.playerData = null;
         this.authToken = null; // Token agora vem via cookie
@@ -1052,9 +1055,6 @@ class MagicGameSystem {
                                 break;
                             case 'match_count':
                                 achievement.progress = this.playerData.totalMatches || 0;
-                                break;
-                            case 'card_owner_count':
-                                achievement.progress = this.playerData.cardOwnerCount || 0;
                                 break;
                         }
                     }
@@ -3103,7 +3103,7 @@ class MagicGameSystem {
                     // Se não tiver imagem, tentar buscar na API
                     if (!cardImage && cardName) {
                         try {
-                            const response = await fetch(`/api/cards/search/${encodeURIComponent(cardName)}`);
+                            const response = await fetch(`http://localhost:3000/api/cards/search/${encodeURIComponent(cardName)}`);
                             if (response.ok) {
                                 const cardData = await response.json();
                                 const cardArray = Array.isArray(cardData) ? cardData : [cardData];
@@ -3518,8 +3518,8 @@ class MagicGameSystem {
         const titleElement = document.getElementById('modalAchievementTitle');
         const nameElement = document.getElementById('modalAchievementName');
         const descElement = document.getElementById('modalAchievementDesc');
-        const xpElement = document.getElementById('modalAchievementXP');
         const dateElement = document.getElementById('modalAchievementDate');
+        const xpElement = document.getElementById('modalAchievementXP');
         const specialSection = document.getElementById('specialAchievementSection');
         const passwordInput = document.getElementById('achievementPassword');
         const errorDiv = document.getElementById('passwordError');
@@ -3530,10 +3530,15 @@ class MagicGameSystem {
         descElement.textContent = achievement.description;
         xpElement.textContent = `+${achievement.xpReward} XP`;
         
-        // Exibir data de desbloqueio se disponível
-        if (achievement.unlockedAt && achievement.unlocked) {
-            const date = new Date(achievement.unlockedAt);
-            dateElement.textContent = `📅 Desbloqueado em: ${date.toLocaleDateString('pt-BR')}`;
+        // Exibir data de desbloqueio se o achievement estiver desbloqueado
+        if (achievement.unlocked && achievement.unlockedAt) {
+            const unlockedDate = new Date(achievement.unlockedAt);
+            const formattedDate = unlockedDate.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            dateElement.textContent = `🗓️ Conquistado em ${formattedDate}`;
             dateElement.style.display = 'block';
         } else {
             dateElement.style.display = 'none';
@@ -3586,15 +3591,10 @@ class MagicGameSystem {
         unlockBtn.textContent = '🔄 Desbloqueando...';
         
         try {
-            // Capturar a data customizada do input
-            const customDateInput = document.getElementById('customUnlockDate');
-            const customUnlockedAt = customDateInput && customDateInput.value ? customDateInput.value : null;
-            
             const result = await this.achievementSystem.unlockSpecialAchievement(
                 achievementId, 
                 password, 
-                this.currentPlayerId,
-                customUnlockedAt
+                this.currentPlayerId
             );
             
             if (result.success) {
@@ -3994,7 +3994,7 @@ class MagicGameSystem {
                     <option value="Lifegain">Lifegain</option>
                     <option value="Mill">Mill</option>
                     <option value="Self-Mill">Self-Mill</option>
-                    <option value="Control // Stax">Control // Stax</option>
+                    <option value="Stax">Stax</option>
                     <option value="Theft">Theft</option>
                     <option value="Tokens // +1/+1 Counters">Tokens // +1/+1 Counters</option>
                     <option value="Voltron">Voltron</option>
@@ -4441,7 +4441,7 @@ class MagicGameSystem {
             // CAMPO OBRIGATÓRIO: ID do jogador que está registrando a partida
             playerId: this.currentPlayerId,
             
-            date: matchDateElement ? matchDateElement.value : new Date().toISOString().split('T')[0],
+            date: matchDateElement ? new Date(matchDateElement.value) : new Date(),
             turns: matchTurnsElement ? parseInt(matchTurnsElement.value) : 0,
             firstPlayer: firstPlayerElement ? firstPlayerElement.value : '',
             
@@ -4466,7 +4466,8 @@ class MagicGameSystem {
             participants: [ranking.first, ranking.second, ranking.third, ranking.fourth].filter(id => id),
             result: winnerPlayerId === this.currentPlayerId ? 'win' : 'loss',
             commanders: commanders,
-            playerProfiles: playerProfiles
+            playerProfiles: playerProfiles,
+            createdAt: matchDateElement ? new Date(matchDateElement.value) : new Date() // Data da partida para achievements
         };
     }
 

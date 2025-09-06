@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mana Forge - Commander Gamification</title>
+    <title>Sistema Magic - Perfil do Jogador</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -81,7 +81,7 @@
                 <div class="player-info">
                     <div class="player-header-top">
                         <div class="player-name-section">
-                            <h1 id="playerName">Loading...</h1>
+                            <h1 id="playerName">Gabriel - Caçador de Dragões</h1>
                             <div class="title-selector">
                                 <select id="playerTitleSelect" class="title-select">
                                     <option value="Planeswalker Iniciante">Planeswalker Iniciante</option>
@@ -95,11 +95,11 @@
                     <div class="xp-section">
                         <div class="xp-bar-container">
                             <div class="xp-bar" id="xpBar"></div>
-                            <span class="xp-text" id="xpText">Loading...</span>
+                            <span class="xp-text" id="xpText">150 / 300 XP</span>
                         </div>
                     </div>
                     <div class="currency">
-                        <span class="mana-coins" id="manaCoins">🔮</span>
+                        <span class="mana-coins" id="manaCoins">🔮 250</span>
                     </div>
                 </div>
             </div>
@@ -121,22 +121,22 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h3>Winrate Geral</h3>
-                        <div class="stat-value" id="generalWinrate">Loading...</div>
-                        <div class="stat-detail">Loading...</div>
+                        <div class="stat-value" id="generalWinrate">68%</div>
+                        <div class="stat-detail">42 vitórias / 62 partidas</div>
                     </div>
                     <div class="stat-card">
                         <h3>Tema Favorito</h3>
-                        <div class="stat-value" id="favoriteDeck">Loading...</div>
-                        <div class="stat-detail">Loading...</div>
+                        <div class="stat-value" id="favoriteDeck">Dragões Vermelhos</div>
+                        <div class="stat-detail">Winrate: 75% (18/24)</div>
                     </div>
                     <div class="stat-card">
                         <h3>Vitória Mais Rápida</h3>
-                        <div class="stat-value" id="fastestWin">Loading...</div>
+                        <div class="stat-value" id="fastestWin">Turno 4</div>
                     </div>
                     <div class="stat-card">
                         <h3>Sequência de Vitórias</h3>
-                        <div class="stat-value" id="winStreak">Loading...</div>
-                        <div class="stat-detail">Loading...</div>
+                        <div class="stat-value" id="winStreak">7 jogos</div>
+                        <div class="stat-detail">Recorde pessoal</div>
                     </div>
                 </div>
                 
@@ -261,7 +261,6 @@
                 <h2 id="modalAchievementTitle">Conquista Desbloqueada!</h2>
                 <div class="achievement-name" id="modalAchievementName"></div>
                 <div class="achievement-description" id="modalAchievementDesc"></div>
-                <div class="achievement-unlock-date" id="modalAchievementDate" style="display: none;"></div>
                 <div class="xp-reward" id="modalAchievementXP">+50 XP</div>
                 
                 <!-- Seção para achievements especiais -->
@@ -269,14 +268,6 @@
                     <div class="password-input-container">
                         <label for="achievementPassword">🔐 Digite a senha para desbloquear:</label>
                         <input type="password" id="achievementPassword" placeholder="Digite a senha..." class="password-input">
-                        
-                        <!-- Novo campo de data customizada -->
-                        <div class="custom-date-container" style="margin-top: 15px;">
-                            <label for="customUnlockDate">📅 Data de desbloqueio (opcional):</label>
-                            <input type="date" id="customUnlockDate" class="custom-date-input">
-                            <small class="date-help-text">Se não informado, será usada a data atual</small>
-                        </div>
-                        
                         <button id="unlockSpecialBtn" class="unlock-special-btn">🔓 Desbloquear</button>
                     </div>
                     <div id="passwordError" class="password-error" style="display: none;"></div>
@@ -440,7 +431,7 @@
                                     <option value="Lifegain">Lifegain</option>
                                     <option value="Mill">Mill</option>
                                     <option value="Self-Mill">Self-Mill</option>
-                                    <option value="Control // Stax">Control // Stax</option>
+                                    <option value="Stax">Stax</option>
                                     <option value="Theft">Theft</option>
                                     <option value="Tokens // +1/+1 Counters">Tokens // +1/+1 Counters</option>
                                     <option value="Voltron">Voltron</option>
@@ -782,5 +773,4 @@
         </div>
     </div>
 </body>
-
 </html>
