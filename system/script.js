@@ -3979,7 +3979,7 @@ class MagicGameSystem {
                     <option value="Big Mana">Big Mana</option>
                     <option value="Clones // Theft">Clones // Theft</option>
                     <option value="Combo">Combo</option>
-                    <option value="Control">Control</option>
+                    <option value="Control // Stax">Control // Stax</option>
                     <option value="Discard">Discard</option>
                     <option value="Exile">Exile</option>
                     <option value="Fight">Fight</option>
@@ -5204,4 +5204,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (isAuthenticated) {
         await system.init();
     }
+
 });
